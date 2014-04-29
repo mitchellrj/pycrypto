@@ -4294,10 +4294,13 @@ openbsd*)
     CFLAGS="$CFLAGS -I/usr/local/include"
     LDFLAGS="$LDFLAGS -L/usr/local/lib"
     ;;
+solaris*)
+    # GMP headers are in a strange location
+    CLFAGS="$CFLAGS -I/usr/include/gmp
+    ;;
 *)
     ;;
 esac
-
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -Wall" >&5
 $as_echo_n "checking whether C compiler accepts -Wall... " >&6; }
@@ -5131,17 +5134,26 @@ if test "x$have_maes" = "xyes"; then :
     CPPFLAGS="$CPPFLAGS -maes"
 
 fi
-for ac_header in wmmintrin.h
-do :
-  ac_fn_c_check_header_mongrel "$LINENO" "wmmintrin.h" "ac_cv_header_wmmintrin_h" "$ac_includes_default"
-if test "x$ac_cv_header_wmmintrin_h" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
+case "$host_os" in
+solaris*)
+    cat >>confdefs.h <<_ACEOF
+#define HAVE_WMMINTRIN_H 0
+_ACEOF
+    ;;
+*)
+    for ac_header in wmmintrin.h
+    do :
+        ac_fn_c_check_header_mongrel "$LINENO" "wmmintrin.h" "ac_cv_header_wmmintrin_h" "$ac_includes_default"
+        if test "x$ac_cv_header_wmmintrin_h" = xyes; then :
+            cat >>confdefs.h <<_ACEOF
 #define HAVE_WMMINTRIN_H 1
 _ACEOF
 
-fi
+        fi
 
-done
+    done
+    ;;
+esac
 
 CPPFLAGS="$old_CPPFLAGS"
 
